@@ -1,0 +1,116 @@
+-- Get Players:
+
+local lp = game:FindService("Players").LocalPlayer
+
+local function gplr(String)
+	local Found = {}
+	local strl = String:lower()
+	if strl == "all" then
+		for i,v in pairs(game:FindService("Players"):GetPlayers()) do
+			table.insert(Found,v)
+		end
+	elseif strl == "others" then
+		for i,v in pairs(game:FindService("Players"):GetPlayers()) do
+			if v.Name ~= lp.Name then
+				table.insert(Found,v)
+			end
+		end 
+	elseif strl == "me" then
+		for i,v in pairs(game:FindService("Players"):GetPlayers()) do
+			if v.Name == lp.Name then
+				table.insert(Found,v)
+			end
+		end 
+	else
+		for i,v in pairs(game:FindService("Players"):GetPlayers()) do
+			if v.Name:lower():sub(1, #String) == String:lower() then
+				table.insert(Found,v)
+			end
+		end 
+	end
+	return Found 
+end
+
+local function notif(str,dur)
+	game:FindService("StarterGui"):SetCore("SendNotification", {
+		Title = "yeet gui",
+		Text = str,
+		Icon = "rbxassetid://2005276185",
+		Duration = dur or 3
+	})
+end
+
+
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local GUIName = Instance.new("TextLabel")
+local TypeName = Instance.new("TextBox")
+local FlingButton = Instance.new("TextButton")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
+Frame.BorderColor3 = Color3.fromRGB(59, 59, 59)
+Frame.BorderSizePixel = 7
+Frame.Position = UDim2.new(0.695863724, 0, 0.641285956, 0)
+Frame.Size = UDim2.new(0, 366, 0, 205)
+
+GUIName.Name = "GUIName"
+GUIName.Parent = Frame
+GUIName.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
+GUIName.BorderColor3 = Color3.fromRGB(59, 59, 59)
+GUIName.BorderSizePixel = 7
+GUIName.Size = UDim2.new(0, 366, 0, 66)
+GUIName.Font = Enum.Font.RobotoCondensed
+GUIName.Text = "FE Fling GUI [JoKeRz Edition]"
+GUIName.TextColor3 = Color3.fromRGB(193, 113, 32)
+GUIName.TextSize = 20.000
+
+TypeName.Name = "TypeName"
+TypeName.Parent = Frame
+TypeName.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+TypeName.BorderColor3 = Color3.fromRGB(27, 42, 53)
+TypeName.BorderSizePixel = 0
+TypeName.Position = UDim2.new(0.0573770478, 0, 0.414634138, 0)
+TypeName.Size = UDim2.new(0, 325, 0, 50)
+TypeName.Font = Enum.Font.RobotoCondensed
+TypeName.Text = "Type Name Here"
+TypeName.TextColor3 = Color3.fromRGB(94, 94, 94)
+TypeName.TextSize = 23.000
+TypeName.TextWrapped = true
+
+FlingButton.Name = "FlingButton"
+FlingButton.Parent = Frame
+FlingButton.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
+FlingButton.BorderColor3 = Color3.fromRGB(59, 59, 59)
+FlingButton.BorderSizePixel = 3
+FlingButton.Position = UDim2.new(0.240437165, 0, 0.72682929, 0)
+FlingButton.Size = UDim2.new(0, 190, 0, 40)
+FlingButton.Font = Enum.Font.RobotoCondensed
+FlingButton.Text = "Fling"
+FlingButton.TextColor3 = Color3.fromRGB(193, 113, 32)
+FlingButton.TextSize = 20.000
+FlingButton.TextWrapped = true
+FlingButton.MouseButton1Click:Connect(function(Fling)
+	local Target = gplr(TypeName.Text)
+	if Target[1] then
+		Target = Target[1]
+
+		local Thrust = Instance.new('BodyThrust', lp.Character.HumanoidRootPart)
+		Thrust.Force = Vector3.new(9999,9999,9999)
+		Thrust.Name = "YeetForce"
+		repeat
+			lp.Character.HumanoidRootPart.CFrame = Target.Character.HumanoidRootPart.CFrame
+			Thrust.Location = Target.Character.HumanoidRootPart.Position
+			game:FindService("RunService").Heartbeat:wait()
+		until not Target.Character:FindFirstChild("Head")
+	else
+		notif("Invalid player")
+	end
+end)
